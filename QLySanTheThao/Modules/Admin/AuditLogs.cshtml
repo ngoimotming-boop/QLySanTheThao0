@@ -1,0 +1,52 @@
+﻿@{
+    Layout = "/Modules/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Nhật ký Hoạt động";
+}
+
+<div class="container-fluid px-0 py-2">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1">Nhật ký Hoạt động hệ thống</h3>
+            <p class="text-muted mb-0">Theo dõi toàn bộ lịch sử thao tác của quản trị viên và người dùng</p>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm p-4 rounded-4">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="py-3">Thời gian</th>
+                        <th class="py-3">Người thực hiện</th>
+                        <th class="py-3">Hành động</th>
+                        <th class="py-3">Chi tiết</th>
+                        <th class="py-3">IP Address</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="text-muted small">20/10/2026 12:45</span></td>
+                        <td><span class="fw-semibold">Quản trị viên (Admin)</span></td>
+                        <td><span class="badge bg-success bg-opacity-10 text-success px-2 py-1">Cập nhật cấu hình</span></td>
+                        <td>Thay đổi tên hệ thống và bật chế độ bảo trì</td>
+                        <td><code class="text-muted">127.0.0.1</code></td>
+                    </tr>
+                    <tr>
+                        <td><span class="text-muted small">20/10/2026 11:30</span></td>
+                        <td><span class="fw-semibold">Quản trị viên (Admin)</span></td>
+                        <td><span class="badge bg-primary bg-opacity-10 text-primary px-2 py-1">Cập nhật giá</span></td>
+                        <td>Thay đổi biểu giá cho nhóm 'Sân 7 người'</td>
+                        <td><code class="text-muted">127.0.0.1</code></td>
+                    </tr>
+                    <tr>
+                        <td><span class="text-muted small">19/10/2026 16:15</span></td>
+                        <td><span class="fw-semibold">Nguyễn Văn Khách</span></td>
+                        <td><span class="badge bg-warning bg-opacity-10 text-warning px-2 py-1">Đặt sân mới</span></td>
+                        <td>Đơn đặt sân #104 (Sân bóng đá A1)</td>
+                        <td><code class="text-muted">192.168.1.50</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

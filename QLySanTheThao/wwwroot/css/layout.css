@@ -1,0 +1,157 @@
+﻿/* =========================================================
+   wwwroot/css/admin-wow.css
+   Giao diện Cyber/Futuristic Glassmorphism - Dự án Quản lý Sân
+   ========================================================= */
+
+/* 1. NỀN TỔNG THỂ DỰ ÁN (Pha màu Tím - Xanh dương sâu lắng) */
+body {
+    background: linear-gradient(135deg, #0d0b26 0%, #1a1642 40%, #0f2027 100%) !important;
+    color: #f8f9fa !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+}
+
+/* 2. CÁC KHỐI THÔNG TIN / CARD / SIDEBAR (Hiệu ứng kính mờ - Glassmorphism) */
+.card, .sidebar, .navbar, .modal-content {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.125) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    border-radius: 16px !important;
+    color: #ffffff !important;
+}
+
+/* 3. TIÊU ĐỀ & VĂN BẢN (Text Gradient Xanh dương - Xanh lá) */
+h1, h2, h3, h4, h5, .fw-bold {
+    color: #ffffff !important;
+}
+
+.text-muted {
+    color: #b0b8c4 !important;
+}
+
+.text-primary {
+    color: #00f2fe !important; /* Xanh dương dạ quang */
+}
+
+/* 4. BẢNG DỮ LIỆU (Table pha chút Trắng mờ & Xanh) */
+.table {
+    color: #e2e8f0 !important;
+    background: transparent !important;
+}
+
+.table-light, .table-dark, thead tr {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #00f2fe !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.table-hover tbody tr {
+    transition: all 0.25s ease-in-out;
+}
+
+    .table-hover tbody tr:hover {
+        background: rgba(255, 255, 255, 0.08) !important;
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.25);
+        transform: scale(1.002);
+    }
+
+/* 5. CÁC NÚT BẤM (BUTTONS) & Ô NHẬP LIỆU (INPUTS) */
+/* Ô nhập liệu/Tìm kiếm */
+.form-control, .input-group-text {
+    background: rgba(255, 255, 255, 0.07) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+    border-radius: 10px !important;
+}
+
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.12) !important;
+        border-color: #00f2fe !important;
+        box-shadow: 0 0 10px rgba(0, 242, 254, 0.5) !important;
+        color: #ffffff !important;
+    }
+
+    .form-control::placeholder {
+        color: #a0aec0 !important;
+    }
+
+/* Nút Tìm kiếm / Nút chính (Gradient Tím -> Xanh dương) */
+.btn-primary {
+    background: linear-gradient(135deg, #7F00FF 0%, #E100FF 50%, #00d2ff 100%) !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(127, 0, 255, 0.4);
+    transition: all 0.3s ease;
+}
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 210, 255, 0.6) !important;
+    }
+
+/* Nút Duyệt / Thành công (Gradient Xanh lá Tươi) */
+.btn-success {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(56, 239, 125, 0.3);
+}
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(56, 239, 125, 0.6) !important;
+    }
+
+/* Nút Từ chối / Hủy (Gradient Đỏ rực) */
+.btn-danger, .btn-outline-danger {
+    background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%) !important;
+    border: none !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(255, 65, 108, 0.3);
+}
+
+    .btn-danger:hover, .btn-outline-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(255, 75, 43, 0.6) !important;
+    }
+
+/* 6. NHÃN TRẠNG THÁI (BADGES) */
+/* Đã duyệt / Xác nhận (Xanh lá) */
+.badge.bg-success {
+    background: linear-gradient(135deg, #11998e, #38ef7d) !important;
+    color: #000000 !important;
+    font-weight: 700;
+    box-shadow: 0 0 10px rgba(56, 239, 125, 0.5);
+}
+
+/* Chờ duyệt (Pha màu Vàng rực rỡ) */
+.badge.bg-warning {
+    background: linear-gradient(135deg, #ffe259, #ffa751) !important;
+    color: #000000 !important;
+    font-weight: 700;
+    box-shadow: 0 0 10px rgba(255, 226, 89, 0.5);
+}
+
+/* Đã từ chối / Hủy (Đỏ) */
+.badge.bg-danger {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b) !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(255, 65, 108, 0.5);
+}
+
+/* Vai trò / Role (Tím - Xanh) */
+.badge.bg-primary {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%) !important;
+    box-shadow: 0 0 10px rgba(37, 117, 252, 0.4);
+}
+
+/* 7. THÔNG BÁO (ALERTS) */
+.alert-success {
+    background: rgba(56, 239, 125, 0.15) !important;
+    border: 1px solid #38ef7d !important;
+    color: #38ef7d !important;
+    backdrop-filter: blur(10px);
+}

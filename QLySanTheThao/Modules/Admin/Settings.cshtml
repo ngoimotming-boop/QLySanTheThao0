@@ -1,0 +1,126 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "/Modules/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Cấu hình Hệ thống";
+
+    var systemName = ViewBag.SystemName ?? TempData["SystemName"]?.ToString() ?? "Hệ thống Quản lý Sân Thể Thao";
+    var hotline = ViewBag.Hotline ?? TempData["Hotline"]?.ToString() ?? "0901234567";
+    var email = ViewBag.Email ?? TempData["Email"]?.ToString() ?? "admin@sanethethao.vn";
+    var address = ViewBag.Address ?? TempData["Address"]?.ToString() ?? "123 Đường Cầu Giấy, Hà Nội";
+    var openTime = ViewBag.OpenTime ?? TempData["OpenTime"]?.ToString() ?? "06:00";
+    var closeTime = ViewBag.CloseTime ?? TempData["CloseTime"]?.ToString() ?? "22:30";
+    var bankName = ViewBag.BankName ?? TempData["BankName"]?.ToString() ?? "MBBank";
+    var accountNumber = ViewBag.AccountNumber ?? TempData["AccountNumber"]?.ToString() ?? "0901234567999";
+    var accountHolder = ViewBag.AccountHolder ?? TempData["AccountHolder"]?.ToString() ?? "NGUYEN VAN A";
+    bool maintenanceMode = ViewBag.MaintenanceMode ?? (TempData["MaintenanceMode"] != null ? Convert.ToBoolean(TempData["MaintenanceMode"]) : false);
+}
+
+<div class="container-fluid px-0 py-2">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1">Cấu hình Hệ thống</h3>
+            <p class="text-muted mb-0">Quản lý thông tin trung tâm, quy định hoạt động và tham số ứng dụng</p>
+        </div>
+        <div>
+            <button type="submit" form="settingsForm" class="btn btn-primary rounded-pill px-4 shadow-sm fw-semibold">
+                <i class="bi bi-save me-2"></i>Lưu tất cả cài đặt
+            </button>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <form id="settingsForm" asp-controller="Admin" asp-action="SaveSettings" method="post">
+        <div class="row g-4">
+            <!-- Cột Trái (8 phần): Thông tin & Giờ hoạt động -->
+            <div class="col-lg-8">
+                <!-- Card 1: Thông tin liên hệ trung tâm -->
+                <div class="card border-0 shadow-sm p-4 rounded-4 mb-4">
+                    <h5 class="fw-bold text-primary mb-3">
+                        <i class="bi bi-building me-2"></i>Thông tin Trung tâm Thể thao
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Tên hệ thống sân</label>
+                            <input type="text" name="systemName" class="form-control rounded-3" value="@systemName" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Hotline hỗ trợ</label>
+                            <input type="text" name="hotline" class="form-control rounded-3" value="@hotline" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Email liên hệ</label>
+                            <input type="email" name="email" class="form-control rounded-3" value="@email" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Địa chỉ cơ sở chính</label>
+                            <input type="text" name="address" class="form-control rounded-3" value="@address" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Giờ hoạt động -->
+                <div class="card border-0 shadow-sm p-4 rounded-4">
+                    <h5 class="fw-bold text-success mb-3">
+                        <i class="bi bi-clock-history me-2"></i>Thời gian Hoạt động
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Giờ mở cửa trung tâm</label>
+                            <input type="time" name="openTime" class="form-control" value="@openTime" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Giờ đóng cửa trung tâm</label>
+                            <input type="time" name="closeTime" class="form-control" value="@closeTime" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cột Phải (4 phần): Cấu hình QR & Bảo trì -->
+            <div class="col-lg-4">
+                <!-- Card 3: Cấu hình Tài khoản QR -->
+                <div class="card border-0 shadow-sm p-4 rounded-4 mb-4">
+                    <h5 class="fw-bold text-dark mb-3">
+                        <i class="bi bi-qr-code-scan me-2 text-primary"></i>Tài khoản Nhận Cọc (QR)
+                    </h5>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Ngân hàng</label>
+                        <select name="bankName" class="form-select">
+                            <option value="MBBank" selected="@(bankName == "MBBank")">MBBank (Ngân hàng Quân Đội)</option>
+                            <option value="Vietcombank" selected="@(bankName == "Vietcombank")">Vietcombank</option>
+                            <option value="Techcombank" selected="@(bankName == "Techcombank")">Techcombank</option>
+                            <option value="BIDV" selected="@(bankName == "BIDV")">BIDV</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Số tài khoản</label>
+                        <input type="text" name="accountNumber" class="form-control fw-bold text-primary" value="@accountNumber" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Chủ tài khoản</label>
+                        <input type="text" name="accountHolder" class="form-control text-uppercase" value="@accountHolder" />
+                    </div>
+                </div>
+
+                <!-- Card 4: Chế độ Vận hành & Bảo trì -->
+                <div class="card border-0 shadow-sm p-4 rounded-4">
+                    <h5 class="fw-bold text-danger mb-3">
+                        <i class="bi bi-shield-lock me-2"></i>Vận hành & Bảo trì
+                    </h5>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="maintenanceMode" name="maintenanceMode" value="true" @(maintenanceMode ? "checked" : "") />
+                        <label class="form-check-label fw-semibold" for="maintenanceMode">Bật chế độ Bảo trì</label>
+                    </div>
+                    <p class="text-muted small mb-0">Khi bật, khách hàng sẽ nhận thông báo bảo trì khi truy cập hệ thống.</p>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

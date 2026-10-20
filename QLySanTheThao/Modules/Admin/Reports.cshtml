@@ -1,0 +1,117 @@
+﻿@{
+    Layout = "/Modules/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Báo cáo & Thống kê Cầu Lông";
+}
+
+<div class="container-fluid px-0 py-2">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1"><i class="bi bi-activity text-primary me-2"></i>Báo cáo & Thống kê Sân Cầu Lông</h3>
+            <p class="text-muted mb-0">Số liệu thực tế cập nhật theo thời gian thực từ cơ sở dữ liệu</p>
+        </div>
+        <div>
+            <button class="btn btn-outline-primary rounded-pill px-4 shadow-sm fw-semibold" onclick="window.print()">
+                <i class="bi bi-printer me-2"></i>In báo cáo
+            </button>
+        </div>
+    </div>
+
+    <!-- Hàng thẻ chỉ số tổng quan (Realtime) -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 rounded-4 bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="mb-1 text-white-50">Tổng doanh thu thực tế</p>
+                        <h4 class="fw-bold mb-0">@(ViewBag.TotalRevenue != null ? ((decimal)ViewBag.TotalRevenue).ToString("N0") : "0") đ</h4>
+                    </div>
+                    <div class="fs-1 text-white-50"><i class="bi bi-cash-stack"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 rounded-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="mb-1 text-muted">Lượt đặt sân</p>
+                        <h4 class="fw-bold mb-0 text-dark">@ViewBag.TotalBookings đơn</h4>
+                    </div>
+                    <div class="fs-1 text-primary"><i class="bi bi-calendar2-check"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 rounded-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="mb-1 text-muted">Số lượng sân cầu</p>
+                        <h4 class="fw-bold mb-0 text-success">@ViewBag.TotalCourts sân</h4>
+                    </div>
+                    <div class="fs-1 text-success"><i class="bi bi-tsunami"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 rounded-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="mb-1 text-muted">Khách hàng đăng ký</p>
+                        <h4 class="fw-bold mb-0 text-warning">@ViewBag.TotalUsers người</h4>
+                    </div>
+                    <div class="fs-1 text-warning"><i class="bi bi-person-badge"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bảng hiệu suất từng Sân Cầu Lông (Dữ liệu động) -->
+    <div class="card border-0 shadow-sm p-4 rounded-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold mb-0"><i class="bi bi-bar-chart-fill me-2 text-primary"></i>Hiệu suất khai thác từng sân Cầu Lông</h5>
+            <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill"><i class="bi bi-arrow-repeat me-1"></i>Dữ liệu Realtime</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="py-3">Tên sân cầu</th>
+                        <th class="py-3">Loại thảm / Sân</th>
+                        <th class="py-3">Giá / Giờ</th>
+                        <th class="py-3 text-center">Lượt đặt thành công</th>
+                        <th class="py-3">Tỷ lệ lấp đầy</th>
+                        <th class="py-3 text-end">Doanh thu tạo ra</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold text-primary"><i class="bi bi-hash me-1"></i>@item.CourtName</td>
+                                <td><span class="badge bg-secondary bg-opacity-10 text-dark">@item.Type</span></td>
+                                <td>@item.PricePerHour.ToString("N0") đ</td>
+                                <td class="text-center fw-semibold">@item.TotalBookings</td>
+                                <td style="width: 200px;">
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                            <div class="progress-bar @(item.OccupancyRate >= 50 ? "bg-success" : "bg-info")" role="progressbar" style="width: @item.OccupancyRate%"></div>
+                                        </div>
+                                        <small class="fw-bold text-muted">@item.OccupancyRate%</small>
+                                    </div>
+                                </td>
+                                <td class="text-end fw-bold text-success">@item.Revenue.ToString("N0") đ</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">Chưa có dữ liệu sân cầu lông trong hệ thống.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

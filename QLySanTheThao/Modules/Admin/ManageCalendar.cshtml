@@ -1,0 +1,85 @@
+﻿@{
+    Layout = "/Modules/Shared/_AdminLayoutWow.cshtml";
+    ViewData["Title"] = "Lịch đặt sân trực quan";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">Lịch đặt sân theo ngày</h3>
+        <p class="text-muted mb-0">Theo dõi trực quan trạng thái các sân theo từng khung giờ trong ngày</p>
+    </div>
+
+    <!-- Bộ chọn ngày xem lịch -->
+    <div class="d-flex align-items-center gap-2">
+        <label class="fw-semibold text-muted small mb-0">Chọn ngày:</label>
+        <input type="date" class="form-control form-control-sm rounded-pill px-3" value="@DateTime.Today.ToString("yyyy-MM-dd")" onchange="changeCalendarDate(this.value)" />
+    </div>
+</div>
+
+<!-- Chú thích trạng thái -->
+<div class="d-flex gap-3 mb-4">
+    <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-success p-2 rounded-circle"></span>
+        <small class="text-muted fw-semibold">Sân trống</small>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-danger p-2 rounded-circle"></span>
+        <small class="text-muted fw-semibold">Đã được đặt</small>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-warning p-2 rounded-circle"></span>
+        <small class="text-muted fw-semibold">Đang chờ duyệt</small>
+    </div>
+</div>
+
+<!-- Lưới lịch đặt sân (Grid View) -->
+<div class="card border-0 shadow-sm p-4 rounded-4">
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 15%;">Tên sân</th>
+                    <th>06:00 - 09:00</th>
+                    <th>09:00 - 12:00</th>
+                    <th>12:00 - 15:00</th>
+                    <th>15:00 - 18:00</th>
+                    <th>18:00 - 21:00 (Vàng)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dữ liệu mẫu giả lập lưới sân -->
+                <tr>
+                    <td class="fw-semibold text-start">Sân 5 - Số 1</td>
+                    <td><span class="badge bg-success bg-opacity-10 text-success w-100 py-2 fw-semibold">Trống</span></td>
+                    <td><span class="badge bg-danger bg-opacity-10 text-danger w-100 py-2 fw-semibold">Đã đặt (Nguyễn An)</span></td>
+                    <td><span class="badge bg-success bg-opacity-10 text-success w-100 py-2 fw-semibold">Trống</span></td>
+                    <td><span class="badge bg-warning bg-opacity-10 text-warning w-100 py-2 fw-semibold">Chờ duyệt</span></td>
+                    <td><span class="badge bg-danger bg-opacity-10 text-danger w-100 py-2 fw-semibold">Đã đặt (Trần Quân)</span></td>
+                </tr>
+                <tr>
+                    <td class="fw-semibold text-start">Sân 5 - Số 2</td>
+                    <td><span class="badge bg-danger bg-opacity-10 text-danger w-100 py-2 fw-semibold">Đã đặt (Lê Long)</span></td>
+                    <td><span class="badge bg-success bg-opacity-10 text-success w-100 py-2 fw-semibold">Trống</span></td>
+                    <td><span class="badge bg-success bg-opacity-10 text-success w-100 py-2 fw-semibold">Trống</span></td>
+                    <td><span class="badge bg-danger bg-opacity-10 text-danger w-100 py-2 fw-semibold">Đã đặt (Hoàng Nam)</span></td>
+                    <td><span class="badge bg-danger bg-opacity-10 text-danger w-100 py-2 fw-semibold">Đã đặt (Minh Tuấn)</span></td>
+                </tr>
+                <tr>
+                    <td class="fw-semibold text-start">Sân Cầu lông Pro</td>
+                    <td><span class="badge bg-success bg-opacity-10 text-success w-100 py-2 fw-semibold">Trống</span></td>
+                    <td><span class="badge bg-success bg-opacity-10 text-success w-100 py-2 fw-semibold">Trống</span></td>
+                    <td><span class="badge bg-danger bg-opacity-10 text-danger w-100 py-2 fw-semibold">Đã đặt (Phạm Quỳnh)</span></td>
+                    <td><span class="badge bg-success bg-opacity-10 text-success w-100 py-2 fw-semibold">Trống</span></td>
+                    <td><span class="badge bg-danger bg-opacity-10 text-danger w-100 py-2 fw-semibold">Đã đặt (Vũ Huy)</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function changeCalendarDate(dateStr) {
+        // Sau này ông có thể viết AJAX gọi về Controller để load lại lịch theo ngày được chọn
+        console.log("Đang xem lịch ngày: ", dateStr);
+    }
+</script>

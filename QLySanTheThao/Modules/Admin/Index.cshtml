@@ -1,0 +1,163 @@
+﻿@{
+    Layout = "/Modules/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Bảng điều khiển";
+
+    // Dùng System.Text.Json serialize dữ liệu từ ViewBag
+    var daysLabels = System.Text.Json.JsonSerializer.Serialize(ViewBag.DaysLabels ?? new List<string>());
+    var daysData = System.Text.Json.JsonSerializer.Serialize(ViewBag.DaysData ?? new List<decimal>());
+
+    var weeksLabels = System.Text.Json.JsonSerializer.Serialize(ViewBag.WeeksLabels ?? new List<string>());
+    var weeksData = System.Text.Json.JsonSerializer.Serialize(ViewBag.WeeksData ?? new List<decimal>());
+
+    var monthsLabels = System.Text.Json.JsonSerializer.Serialize(ViewBag.MonthsLabels ?? new List<string>());
+    var monthsData = System.Text.Json.JsonSerializer.Serialize(ViewBag.MonthsData ?? new List<decimal>());
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">Bảng điều khiển</h3>
+        <p class="text-muted mb-0">Theo dõi trạng thái hệ thống sân thể thao realtime</p>
+    </div>
+</div>
+
+<!-- Thẻ Thống Kê Nhanh -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card stat-card bg-primary text-white p-3 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-white-50 small text-uppercase fw-semibold">Tổng số sân</div>
+                    <h2 class="fw-bold my-2">@ViewBag.TotalCourts</h2>
+                </div>
+                <i class="bi bi-dribbble fs-1 text-white-50"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card bg-success text-white p-3 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-white-50 small text-uppercase fw-semibold">Tổng doanh thu</div>
+                    <h2 class="fw-bold my-2">@(((decimal)(ViewBag.TotalRevenue ?? 0)).ToString("N0")) đ</h2>
+                </div>
+                <i class="bi bi-cash-stack fs-1 text-white-50"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card bg-warning text-dark p-3 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-dark-50 small text-uppercase fw-semibold">Chờ duyệt</div>
+                    <h2 class="fw-bold my-2">@ViewBag.PendingBookings</h2>
+                </div>
+                <i class="bi bi-clock-history fs-1 text-dark-50"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card bg-info text-white p-3 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-white-50 small text-uppercase fw-semibold">Khách hàng</div>
+                    <h2 class="fw-bold my-2">@ViewBag.TotalUsers</h2>
+                </div>
+                <i class="bi bi-people fs-1 text-white-50"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Biểu Đồ Thống Kê Doanh Thu Động -->
+<div class="card border-0 shadow-sm p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <!-- Tên biểu đồ -->
+        <h5 class="fw-bold mb-0 text-primary">
+            <i class="bi bi-bar-chart-line me-2"></i>Thống kê doanh thu hệ thống
+        </h5>
+
+        <!-- Bộ lọc Ngày / Tuần / Tháng -->
+        <div class="d-flex align-items-center gap-2">
+            <label class="fw-semibold text-muted small mb-0">Xem theo:</label>
+            <select id="timeFilter" class="form-select form-select-sm fw-semibold" style="width: 150px;">
+                <option value="day" selected>7 Ngày gần nhất</option>
+                <option value="week">4 Tuần gần nhất</option>
+                <option value="month">6 Tháng gần nhất</option>
+            </select>
+        </div>
+    </div>
+
+    <div style="height: 320px;">
+        <canvas id="revenueChart"></canvas>
+    </div>
+</div>
+
+<!-- Tích hợp Chart.js với Cấu hình Tooltip & Trục Y hiển thị Trđ / k đ -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const chartDataSets = {
+            day: { labels: @Html.Raw(daysLabels), data: @Html.Raw(daysData) },
+            week: { labels: @Html.Raw(weeksLabels), data: @Html.Raw(weeksData) },
+            month: { labels: @Html.Raw(monthsLabels), data: @Html.Raw(monthsData) }
+        };
+
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+
+        let myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: chartDataSets.day.labels,
+                datasets: [{
+                    label: 'Doanh thu thực tế',
+                    data: chartDataSets.day.data,
+                    backgroundColor: 'rgba(13, 110, 253, 0.75)',
+                    borderColor: 'rgba(13, 110, 253, 1)',
+                    borderWidth: 1,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            // Rê chuột vào hiện rõ mốc thời gian và số tiền chi tiết từng đồng
+                            label: function(context) {
+                                let value = context.raw || 0;
+                                return ' Doanh thu: ' + value.toLocaleString('vi-VN') + ' VNĐ';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            // Tự động quy đổi và hiển thị đơn vị Trđ / k đ trên trục Y
+                            callback: function(value) {
+                                if (value >= 1000000) {
+                                    return (value / 1000000).toLocaleString('vi-VN', { maximumFractionDigits: 1 }) + ' Trđ';
+                                } else if (value >= 1000) {
+                                    return (value / 1000).toLocaleString('vi-VN') + 'k đ';
+                                }
+                                return value.toLocaleString('vi-VN') + ' đ';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Xử lý sự kiện chuyển đổi qua lại giữa Ngày / Tuần / Tháng
+        document.getElementById('timeFilter').addEventListener('change', function() {
+            const selectedType = this.value;
+            const selectedData = chartDataSets[selectedType];
+
+            myChart.data.labels = selectedData.labels;
+            myChart.data.datasets[0].data = selectedData.data;
+            myChart.update();
+        });
+    });
+</script>

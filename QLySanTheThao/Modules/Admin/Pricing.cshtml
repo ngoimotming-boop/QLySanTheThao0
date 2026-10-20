@@ -1,0 +1,146 @@
+﻿@model IEnumerable<QLySanTheThao.Modules.Admin.CourtTypePricingViewModel>
+@{
+    Layout = "/Modules/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Bảng giá & Giờ vàng";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">Bảng giá & Khung giờ</h3>
+        <p class="text-muted mb-0">Thiết lập biểu giá thuê theo từng Loại Sân và cấu hình giờ cao điểm hệ thống</p>
+    </div>
+    <div>
+        <a href="/Admin/ManageCourts" class="btn btn-outline-primary rounded-pill px-3 shadow-sm">
+            <i class="bi bi-dribbble me-1"></i>Quản lý Danh sách Sân
+        </a>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show rounded-3 mb-4" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row g-4">
+    <!-- Cột trái: Bảng Biểu Giá Theo LOẠI SÂN -->
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm p-4 rounded-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold text-primary mb-0"><i class="bi bi-tags-fill me-2"></i>Biểu giá theo Loại Sân</h5>
+                <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">@(Model?.Count() ?? 0) Nhóm Loại Sân</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 25%;">Loại Sân</th>
+                            <th style="width: 20%;">Số lượng sân</th>
+                            <th style="width: 22%;">Giá Giờ Thường</th>
+                            <th style="width: 23%;">Giá Giờ Vàng (+30%)</th>
+                            <th class="text-end" style="width: 10%;">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="fw-bold text-dark">@item.Type</td>
+                                    <td><span class="badge bg-light text-dark border px-3 py-1 rounded-pill">@item.CourtCount sân</span></td>
+                                    <td class="text-success fw-bold">@item.PricePerHour.ToString("N0") đ/h</td>
+                                    <td class="text-warning fw-bold">@item.PeakPricePerHour.ToString("N0") đ/h</td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-outline-primary rounded-circle" title="Sửa bảng giá nhóm"
+                                                onclick="openEditTypePricingModal('@item.Type', @item.PricePerHour, @item.PeakPricePerHour)">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">Chưa có dữ liệu loại sân. Vui lòng thêm sân tại trang "Quản lý Sân"!</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cột phải: Cấu hình khung Giờ Vàng -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm p-4 rounded-4 h-100">
+            <h5 class="fw-bold mb-3 text-warning"><i class="bi bi-lightning-charge-fill me-2"></i>Cấu hình Giờ Vàng</h5>
+            <p class="text-muted small">Khi khách đặt sân trong khung giờ này, hệ thống sẽ tự động áp dụng đơn giá Giờ vàng.</p>
+
+            <form asp-action="SaveGoldenHour" method="post">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Bắt đầu giờ vàng</label>
+                    <input type="time" name="goldenHourStart" class="form-control" value="16:00" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Kết thúc giờ vàng</label>
+                    <input type="time" name="goldenHourEnd" class="form-control" value="22:00" required />
+                </div>
+                <div class="mb-3 form-check form-switch mt-3">
+                    <input class="form-check-input" type="checkbox" id="goldenHourActive" name="goldenHourActive" value="true" checked>
+                    <label class="form-check-label fw-semibold" for="goldenHourActive">Kích hoạt tự động</label>
+                </div>
+                <button type="submit" class="btn btn-warning w-100 rounded-pill fw-semibold text-dark mt-3 shadow-sm">
+                    <i class="bi bi-save me-2"></i>Lưu cấu hình
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Sửa Bảng Giá Theo Loại Sân -->
+<div class="modal fade" id="editTypePricingModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Chỉnh Sửa Biểu Giá Nhóm Sân</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-action="UpdateTypePricing" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Loại Sân</label>
+                        <input type="text" id="editCourtType" name="courtType" class="form-control bg-light" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Giá Giờ Thường (VNĐ/giờ)</label>
+                        <input type="number" id="editPricePerHour" name="pricePerHour" class="form-control" step="5000" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Giá Giờ Vàng (VNĐ/giờ)</label>
+                        <input type="number" id="editPeakPricePerHour" name="peakPricePerHour" class="form-control" step="5000" required />
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">Lưu Bảng Giá</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openEditTypePricingModal(courtType, price, peakPrice) {
+        document.getElementById('editCourtType').value = courtType;
+        document.getElementById('editPricePerHour').value = price;
+        document.getElementById('editPeakPricePerHour').value = peakPrice;
+
+        var modal = new bootstrap.Modal(document.getElementById('editTypePricingModal'));
+        modal.show();
+    }
+</script>

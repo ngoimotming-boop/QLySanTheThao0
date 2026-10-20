@@ -1,0 +1,63 @@
+﻿@model IEnumerable<QLySanTheThao.Core.Entities.Booking>
+@{
+    Layout = "/Modules/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Quản lý đặt sân";
+}
+<div class="container mt-4">
+    <h2>📋 Quản lý Đặt sân</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <table class="table table-bordered table-hover mt-3 align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Mã đơn</th>
+                <th>Khách hàng</th>
+                <th>Sân</th>
+                <th>Ngày đặt</th>
+                <th>Khung giờ</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>#@item.Id</td>
+                        <td>@item.User?.FullName <br /><small class="text-muted">@item.User?.PhoneNumber</small></td>
+                        <td>@item.Court?.Name</td>
+                        <td>@item.BookingDate.ToString("dd/MM/yyyy")</td>
+                        <td>@item.StartTime - @item.EndTime</td>
+                        <td>
+                            <span class="badge @(item.Status == QLySanTheThao.Core.Enums.BookingStatus.Confirmed ? "bg-success" : item.Status == QLySanTheThao.Core.Enums.BookingStatus.Cancelled ? "bg-danger" : "bg-warning")">
+                                @item.Status
+                            </span>
+                        </td>
+                        <td>
+                            <form asp-action="UpdateBookingStatus" method="post" class="d-inline">
+                                <input type="hidden" name="bookingId" value="@item.Id" />
+                                <button type="submit" name="status" value="@QLySanTheThao.Core.Enums.BookingStatus.Confirmed" class="btn btn-sm btn-outline-success">Xác nhận</button>
+                                <button type="submit" name="status" value="@QLySanTheThao.Core.Enums.BookingStatus.Cancelled" class="btn btn-sm btn-outline-danger">Hủy</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="text-center text-muted">Chưa có đơn đặt sân nào.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
